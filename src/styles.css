@@ -44,11 +44,11 @@ body {
   word-break: break-all;
   border-radius: 15px;
 }
-.previous-operand {
+.operation {
   font-size: 2.5rem;
 }
-.current-operand {
-  font-size: 1.5rem;
+.result {
+  font-size: 2rem;
 }
 .calculator-grid > button {
   font-family: 'Roboto', sans-serif;
