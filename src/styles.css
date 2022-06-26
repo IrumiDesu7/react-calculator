@@ -1,0 +1,16 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #e7e8e8;
+}
+
+.calculator-grid {
+  display: grid;
+  margin-top: 2rem;
+  grid-template: minmax(7rem, auto) repeat(5, 6rem) / repeat(4, 6rem);
+}
