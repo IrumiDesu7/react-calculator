@@ -1,16 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 *,
 *::after,
 *::before {
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
   margin: 0;
   background-color: #e7e8e8;
+  font-family: 'Roboto', sans-serif;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .calculator-grid {
   display: grid;
-  margin-top: 2rem;
   grid-template: minmax(7rem, auto) repeat(5, 6rem) / repeat(4, 6rem);
+  background-color: #292d36;
+  width: 24rem;
+  border-radius: 15px;
+}
+.output {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-around;
+  grid-column: 1/-1;
+  background-color: #22252d;
+  color: white;
+  padding: 0.75rem;
+  word-wrap: break-word;
+  word-break: break-all;
+  border-radius: 15px;
+}
+.previous-operand {
+  font-size: 2.5rem;
+}
+.current-operand {
+  font-size: 1.5rem;
+}
+.calculator-grid > button {
+  font-family: 'Roboto', sans-serif;
+  font-size: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background-color: #272b33;
+  color: white;
+  margin: 2px;
+}
+.calculator-grid > button:hover,
+.calculator-grid > button:focus {
+  background-color: #2f333d;
+}
+.operators {
+  color: #df6263;
 }
