@@ -1,3 +1,5 @@
+/* eslint-disable default-case */
+/* eslint-disable no-fallthrough */
 import { useReducer } from 'react';
 import DigitButton from './components/DigitButton';
 import OperationButton from './components/OperationButton';
@@ -12,27 +14,26 @@ export const ACTIONS = {
 };
 
 const reducer = (state, { type, payload }) => {
-  // eslint-disable-next-line default-case
   switch (type) {
     case ACTIONS.ADD_DIGIT:
-      if (payload.digit === '0' && state.firstOperand === '0') {
-        return state;
-      }
-      if (payload.digit === '.' && state.firstOperand.includes('.')) {
+      if (
+        (payload.digit === '0' && state.firstOperand === '0') ||
+        (payload.digit === '.' && state.firstOperand.includes('.'))
+      ) {
         return state;
       }
 
-      if (state.operation != null) {
+      if (state.operation == null) {
+        return {
+          ...state,
+          firstOperand: `${state.firstOperand || ''}${payload.digit}`,
+        };
+      } else {
         return {
           ...state,
           secondOperand: `${state.secondOperand || ''}${payload.digit}`,
         };
       }
-
-      return {
-        ...state,
-        firstOperand: `${state.firstOperand || ''}${payload.digit}`,
-      };
 
     case ACTIONS.CHOOSE_OPERATION:
       if (state.firstOperand == null) {
@@ -44,11 +45,34 @@ const reducer = (state, { type, payload }) => {
           operation: payload.operation,
         };
       }
-    // eslint-disable-next-line no-fallthrough
+
     case ACTIONS.CLEAR:
       return {};
+
+    case ACTIONS.EVALUATE:
+      return {
+        ...state,
+        result: evaluate(state),
+      };
   }
 };
+
+function evaluate({ firstOperand, operation, secondOperand }) {
+  const first = parseFloat(firstOperand);
+  const second = parseFloat(secondOperand);
+  if (isNaN(first) || isNaN(second)) return '';
+  // eslint-disable-next-line default-case
+  switch (operation) {
+    case '+':
+      return first + second;
+    case '-':
+      return first - second;
+    case 'x':
+      return first * second;
+    case '÷':
+      return second === '0' ? 'error' : first / second;
+  }
+}
 
 function App() {
   const [{ firstOperand, secondOperand, operation, result }, dispatch] =
@@ -80,7 +104,7 @@ function App() {
       <DigitButton digit='0' dispatch={dispatch} />
       <DigitButton digit='.' dispatch={dispatch} />
       <button>⌫</button>
-      <button>=</button>
+      <button onClick={() => dispatch({ type: ACTIONS.EVALUATE })}>=</button>
     </div>
   );
 }
