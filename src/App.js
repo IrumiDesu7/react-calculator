@@ -80,8 +80,6 @@ const reducer = (state, { type, payload }) => {
 function evaluate({ firstOperand, operation, secondOperand }) {
   const first = parseFloat(firstOperand);
   const second = parseFloat(secondOperand);
-  // if (isNaN(first) || isNaN(second)) return '';
-  console.log(first, second);
   switch (operation) {
     case '+':
       return first + second;
