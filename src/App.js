@@ -23,12 +23,13 @@ const reducer = (state, { type, payload }) => {
         return state;
       }
 
-      if (state.operation == null) {
+      if (state.operation === '') {
         return {
           ...state,
           firstOperand: `${state.firstOperand || ''}${payload.digit}`,
         };
-      } else {
+      }
+      if (state.operation !== '') {
         return {
           ...state,
           secondOperand: `${state.secondOperand || ''}${payload.digit}`,
@@ -36,10 +37,10 @@ const reducer = (state, { type, payload }) => {
       }
 
     case ACTIONS.CHOOSE_OPERATION:
-      if (state.firstOperand == null) {
+      if (state.firstOperand === '') {
         return state;
       }
-      if (state.secondOperand == null) {
+      if (state.secondOperand === '') {
         return {
           ...state,
           operation: payload.operation,
@@ -47,21 +48,40 @@ const reducer = (state, { type, payload }) => {
       }
 
     case ACTIONS.CLEAR:
-      return {};
+      return { firstOperand: '', secondOperand: '', operation: '', result: '' };
 
     case ACTIONS.EVALUATE:
       return {
-        ...state,
-        result: evaluate(state),
+        firstOperand: evaluate(state),
+        secondOperand: '',
+        operation: '',
+        result: '',
       };
+    case ACTIONS.BACKSPACE:
+      if (state.secondOperand !== '') {
+        return {
+          ...state,
+          secondOperand: state.secondOperand.slice(0, -1),
+        };
+      } else if (state.operation !== '') {
+        return {
+          ...state,
+          operation: '',
+        };
+      } else {
+        return {
+          ...state,
+          firstOperand: state.firstOperand.slice(0, -1),
+        };
+      }
   }
 };
 
 function evaluate({ firstOperand, operation, secondOperand }) {
   const first = parseFloat(firstOperand);
   const second = parseFloat(secondOperand);
-  if (isNaN(first) || isNaN(second)) return '';
-  // eslint-disable-next-line default-case
+  // if (isNaN(first) || isNaN(second)) return '';
+  console.log(first, second);
   switch (operation) {
     case '+':
       return first + second;
@@ -76,7 +96,13 @@ function evaluate({ firstOperand, operation, secondOperand }) {
 
 function App() {
   const [{ firstOperand, secondOperand, operation, result }, dispatch] =
-    useReducer(reducer, {});
+    useReducer(reducer, {
+      firstOperand: '',
+      secondOperand: '',
+      operation: '',
+      result: '',
+    });
+
   return (
     <div className='calculator-grid'>
       <div className='output'>
@@ -103,7 +129,7 @@ function App() {
       <OperationButton operation='+' dispatch={dispatch} />
       <DigitButton digit='0' dispatch={dispatch} />
       <DigitButton digit='.' dispatch={dispatch} />
-      <button>⌫</button>
+      <button onClick={() => dispatch({ type: ACTIONS.BACKSPACE })}>⌫</button>
       <button onClick={() => dispatch({ type: ACTIONS.EVALUATE })}>=</button>
     </div>
   );
